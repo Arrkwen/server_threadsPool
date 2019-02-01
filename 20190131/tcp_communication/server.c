@@ -32,27 +32,33 @@ int main(int argc,char **argv)
         return -1;
     }
     //监听端口，最多允许10个连接
-    listen(sfd,10);
-    struct sockaddr_in client;
-    memset(&client,0,sizeof(struct sockaddr_in));
-    socklen_t addrlen=sizeof(struct sockaddr_in);
-    int new_fd=accept(sfd,(struct sockaddr*)&my_sockaddr,&addrlen);
-    if(-1==new_fd)
-    {
-        printf("accpt");
-        return -1;
-    }
+    listen(sfd,12);
+    int new_fd;
     char buf[128]={0};
     //设置结构体，接收客服端的ip和port
-    fd_set rdset;
+    fd_set rdset,currdset;
+        FD_ZERO(&currdset);
+        FD_SET(sfd,&currdset);
+        FD_SET(STDIN_FILENO,&currdset);
     while(1)
     {
-        FD_ZERO(&rdset);
-        FD_SET(new_fd,&rdset);
-        FD_SET(STDIN_FILENO,&rdset);
-        ret = select(new_fd+1,&rdset,NULL,NULL,NULL);
+        memcpy(&rdset,&currdset,sizeof(fd_set));
+        ret = select(15,&rdset,NULL,NULL,NULL);
         if(ret>0)
         {
+            if(FD_ISSET(sfd,&rdset))
+            {
+               struct sockaddr_in client;
+               memset(&client,0,sizeof(struct sockaddr_in));
+               socklen_t addrlen=sizeof(struct sockaddr_in);
+               new_fd=accept(sfd,(struct sockaddr*)&my_sockaddr,&addrlen);
+               if(-1==new_fd)
+               {
+                   printf("accpt");
+                   return -1;
+               }
+              FD_SET(new_fd,&currdset);
+            }
             if(FD_ISSET(STDIN_FILENO,&rdset))
             {
                 memset(buf,0,sizeof(buf));
@@ -70,8 +76,8 @@ int main(int argc,char **argv)
                 ret= recv(new_fd,buf,sizeof(buf)-1,0);
                 if(0==ret)
                 {
+                    FD_CLR(new_fd,&currdset);
                     close(new_fd);
-                    break;
                 }
                 printf("%s\n",buf);
             }

@@ -1,0 +1,7 @@
+参数传递：
+服务端： ./main ip port num  
+IP：服务器绑定的ip
+port:服务器绑定的port
+子进程数目(客服端数量)
+
+客服端：./client ip port

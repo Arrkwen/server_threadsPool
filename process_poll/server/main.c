@@ -1,5 +1,30 @@
 #include "pfunc.h"
 
+int createChildProcess(proInfo *pinfo,int pronum)
+{
+    int i;
+    pid_t pid;
+    int fds[2];
+    //创建pronum个子进程和pronum个能传输套接字描述符的管道
+    for(i=0;i<pronum;i++)
+    {
+        //创建管道
+        socketpair(AF_LOCAL,SOCK_STREAM,0,fds);
+        //创建子进程
+        pid=fork();
+        if(!pid)//子进程
+        {
+            close(fds[1]);//关闭管道写端
+            task(fds[0]);//通过管道读端，获取任务
+        }
+        close(fds[0]);//关闭读端
+        pinfo[i].fds=fds[1];//关联父进程和具体的子进程之间的管道写端，等待分配任务
+        pinfo[i].pid=pid;//获得子进程pid
+        pinfo[i].busy=0;
+    }
+    return 0;
+}
+
 int main(int argc ,char **argv)
 {
     int i,j;

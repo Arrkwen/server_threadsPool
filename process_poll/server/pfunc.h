@@ -50,3 +50,8 @@ void recv_fd(int,int*);
 void task(int);
 //子进程执行任务
 int transFile(int);
+//循环传送n字节
+void send_n(int,void*,int);
+//循环接收n字节
+void recv_n(int,void*,int);
+

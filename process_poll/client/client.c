@@ -1,5 +1,4 @@
-
-#include <func.h>
+#include "cfunc.h"
 
 int main(int argc,char **argv)
 {
@@ -34,12 +33,14 @@ int main(int argc,char **argv)
         perror("client open");
         return -1;
     }
+    //int total=0;//记录当前接收的数据的总长度
     while(1)
     {
-        recv(sfd,&dataLen,sizeof(int),0);
+        recv_n(sfd,&dataLen,sizeof(int));
         if(dataLen>0)
         {
-            recv(sfd,buf,dataLen,0);
+            recv_n(sfd,buf,dataLen);
+           // recv(sfd,buf,dataLen,0); 由于接收缓冲区和发送缓冲区大小有限，因此不能直接使用recv函数
             write(fd,buf,dataLen);
         }else{
             close(sfd);

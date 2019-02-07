@@ -1,5 +1,5 @@
 #include "pfunc.h"
-void send_fd(int socketpairw,int fd)
+int send_fd(int socketpairw,int fd)
 {
     char buf[20]="hello world";
    //初始化消息结构体里的内容结构体
@@ -25,10 +25,11 @@ void send_fd(int socketpairw,int fd)
     if(-1==ret)
     {
         perror("sendmsg");
-        return;
+        return -1;
     }
 }
-void recv_fd(int socketpairr,int *fd)//接收socketpair管道里的数据
+
+int recv_fd(int socketpairr,int *fd)//接收socketpair管道里的数据
 {
     char buf[20]={0};//申请接收消息的空间大小
    //初始化消息结构体里的内容结构体
@@ -53,7 +54,7 @@ void recv_fd(int socketpairr,int *fd)//接收socketpair管道里的数据
     if(-1==ret)
     {
         perror("recvmsg");
-        return;
+        return -1;
     }
     *fd= *(int*)CMSG_DATA(cmsg);//将消息的描述符号赋值给fd
 }

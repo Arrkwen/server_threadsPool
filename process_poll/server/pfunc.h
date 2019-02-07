@@ -42,16 +42,16 @@ typedef struct{
 int tcpInit(int*,char*,char*);
 //创建子进程
 int createChildProcess(proInfo *,int);
-//父进程向子进程发送socket_fd
-void send_fd(int,int);
-//子进程接收父进程发送的socket描述符
-void recv_fd(int,int*);
+//父进程向子进程发送socket_fd,成功返回0，失败返回-1
+int send_fd(int,int);
+//子进程接收父进程发送的socket描述符，成功返回0，失败返回-1
+int recv_fd(int,int*);
 //子进程接收任务
 void task(int);
 //子进程执行任务
 int transFile(int);
 //循环传送n字节
-void send_n(int,void*,int);
+int send_n(int,void*,int);
 //循环接收n字节
-void recv_n(int,void*,int);
+int recv_n(int,void*,int);
 

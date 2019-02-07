@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #define args_check(arg,num) {if(arg != num) return -1;}
 //循环传送n字节
-void send_n(int,void*,int);
+int send_n(int,void*,int);
 //循环接收n字节
-void recv_n(int,void*,int);
+int recv_n(int,void*,int);
 
